@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/questions">
+    <img
+    style="border: none; max-width: 200px;"
+      src="/images/logo.png"
+      alt="Stack Underflow"
+    />
+  </a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbar"
+    aria-controls="navbar"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbar">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/questions">Questions</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/chat">Chat Room</a>
+      </li>
+    </ul>
+    <div  class="form-inline my-2 my-lg-0">
+        <input id="category" class="form-control mr-sm-2" type="text" placeholder="Search">
+        <button id="search" class="btn btn-primary my-2 my-sm-0" type="button">Search</button>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.getElementById('search').addEventListener('click', (e) => {
+    let category = document.getElementById('category').value
+    window.location.href = `/questions?search=${category}`
+  })
+</script>
