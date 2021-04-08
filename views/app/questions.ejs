@@ -2,62 +2,39 @@
 const months = ["January", "February", "March", "April", "May", "June", "July",
 "August", "September", "October", "November", "December"]; %>
 
-<div class="row container-fluid my-5">
-  <div class="col-md-4 col-12">
-    <h3>
-      <button
-        class="btn btn-primary"
-        type="button"
-        data-toggle="collapse"
-        data-target="#categories"
-        aria-expanded="false"
-        aria-controls="categories"
-      >
-        Categories
-      </button>
-    </h3>
-    <div class="collapse" id="categories">
-      <div class="my-2">
+<div class="row container-fluid d-flex justify-content-around my-5">
+  <div class="col-lg-2 col-12">
+    <h3>Categories</h3>
+    <div class="my-2">
+      <ul class="list-group list-group-flush">
         <% categories.forEach(category => { %>
-        <a class="dropdown-item category" style="cursor: pointer"
-          ><%= category %></a
-        >
+        <li class="list-group-item">
+          <a class="category" style="cursor: pointer"><%= category %></a>
+        </li>
         <% }) %>
-      </div>
+      </ul>
     </div>
   </div>
-  <div class="col-md-7 col-12">
+  <div class="col-lg-7 col-12">
     <%- include ("../partials/messages"); %> <% if (questions.length > 0) { %>
     <% questions.forEach(question => { %> <% if (typeof question.best !=
     'undefined') { %>
-    <div class="card bg-light mb-3 success">
+    <div class="card bg-success mb-3">
       <% } else { %>
       <div class="card bg-light mb-3">
         <% } %>
-        <div class="card-header">
-          <h2 class="float-left"><%= question.subject %></h2>
-          <small class="display-6 lead float-right"
-            ><%= question.created_at.getDate() + ' ' +
-            months[question.created_at.getMonth()] + ' ' +
-            question.created_at.getFullYear() %></small
-          >
-        </div>
         <div class="card-body">
-          <%- question.body %>
-          <small class="lead text-primary"> #<%= question.category %> </small>
-          <hr class="my-4" />
+          <a href="/questions/<%= question.id %>" class="btn-link">
+            <p class="lead text-info"><%= question.subject %></p>
+          </a>
           <div>
-            <p class="lead">
-              <a
-                href="/answer/<%= question._id %>"
-                class="btn btn-success float-right"
-                >Answer</a
-              >
-              <a type="button" class="btn btn-primary mx-3 float-right"
-                >Show Answers ( <%= question.answers.length %> )</a
-              >
-            </p>
-          </div>
+          <small class="text-primary"> # <%= question.category %> </small>
+          <small class="text-secondary float-right">
+          <%= question.created_at.getDate() + ' ' +
+          months[question.created_at.getMonth()] + ' ' +
+          question.created_at.getFullYear() %>
+            </small>
+            </div>
         </div>
       </div>
 
@@ -70,16 +47,16 @@ const months = ["January", "February", "March", "April", "May", "June", "July",
   <script>
     document.querySelectorAll(".category").forEach((cat) => {
       cat.addEventListener("click", (e) => {
-        let link = window.location.href
-        let category = e.target.innerText
-        if (link.includes('category')) {
-          link = link.replace(/category=\w*/, `category=${category}`)
-        } else if (link.includes('search')) {
-          link += `&category=${category}`
+        let link = window.location.href;
+        let category = e.target.innerText;
+        if (link.includes("category")) {
+          link = link.replace(/category=\w*/, `category=${category}`);
+        } else if (link.includes("search")) {
+          link += `&category=${category}`;
         } else {
-          link = `/questions?category=${category}`
+          link = `/questions?category=${category}`;
         }
-        window.location.href = link
+        window.location.href = link;
       });
     });
   </script>

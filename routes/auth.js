@@ -2,8 +2,8 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const path = require("path");
 const { isNotConnected } = require("../middleware/security");
+const { getPasswordSize } = require('../utils')
 const User = require("../models/User");
-const passwordSize = 6;
 
 // Login Page
 router.get("/login", isNotConnected, async (req, res) => {
@@ -27,8 +27,8 @@ router.post("/register", isNotConnected, async (req, res) => {
   if (!email || !name || !password || !passwordConfirm || !team)
     errors.push("All fields are required");
   if (password !== passwordConfirm) errors.push("Passwords must match");
-  if (password.length < passwordSize)
-    errors.push(`Password size must be greater than ${passwordSize}`);
+  if (password.length < getPasswordSize())
+    errors.push(`Password size must be greater than ${getPasswordSize()}`);
   let user = await User.findOne({ email: email });
   if (user) errors.push("This email already exists");
   if (errors.length == 0) {

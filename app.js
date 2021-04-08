@@ -43,6 +43,10 @@ app.use("/auth", require("./routes/auth"))
 app.use('/user', require('./routes/user'))
 // Chat Routes
 app.use('/chat', require('./routes/chat'))
+// Question Routes
+app.use('/questions', require('./routes/questions'))
+// Answer Routes
+// app.use('/answers', require('./routes/answers'))
 
 // Mongodb Connection
 mongoose

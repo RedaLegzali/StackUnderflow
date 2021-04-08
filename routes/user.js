@@ -1,15 +1,16 @@
 const { isConnected } = require("../middleware/security");
+const { getCategories } = require("../utils");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
 const router = require("express").Router();
-const passwordSize = 6;
 
 // Get profile
 router.get("/profile", isConnected, (req, res) => {
   res.render("app/profile", {
     title: "Profile",
     image: req.session.user.image,
-    user: req.session.user
+    user: req.session.user,
+    categories: getCategories(req.session.user.team)
   });
 });
 // Put profile
@@ -29,8 +30,8 @@ router.post("/profile", isConnected, async (req, res) => {
   if (!email || !name || !oldPassword || !password || !passwordConfirm || !team)
     errors.push("All fields are required");
   if (password !== passwordConfirm) errors.push("Passwords must match");
-  if (password.length < passwordSize)
-    errors.push(`Password size must be greater than ${passwordSize}`);
+  if (password.length < getPasswordSize())
+    errors.push(`Password size must be greater than ${getPasswordSize()}`);
   if (oldPassword) {
     let match = await bcrypt.compare(oldPassword, user.password);
     if (!match) errors.push("Wrong old password");
@@ -65,7 +66,8 @@ router.post("/profile", isConnected, async (req, res) => {
     image: req.session.user.image,
     user: req.session.user,
     errors,
-    success
+    success,
+    categories: getCategories(req.session.user.team)
   });
 });
 // Delete user
@@ -79,7 +81,8 @@ router.get("/delete", isConnected, async (req, res) => {
 router.get("/questions", isConnected, (req, res) => {
   res.render("app/myquestions", {
     title: "My Question",
-    image: req.session.user.image
+    image: req.session.user.image,
+    categories: getCategories(req.session.user.team)
   });
 });
 
