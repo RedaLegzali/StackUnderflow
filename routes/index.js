@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const User = require('../models/User')
 const Question = require('../models/Question')
 const { isConnected, isNotConnected } = require("../middleware/security");
 
@@ -16,14 +15,18 @@ router.get('/about', isNotConnected, (req, res) => {
 // Get questions page
 router.get('/questions', isConnected, async (req, res) => {
     let search = req.query.search
+    let category = req.query.category
     let questions;
-    if (typeof search == 'undefined') questions = await Question.find()
-    else questions = await Question.find({subject: {$regex: search, $options: 'gi'}  })
+    if (typeof search == 'undefined' && typeof category == 'undefined') questions = await Question.find()
+    else if (typeof search == 'undefined') questions = await Question.find({category: category})
+    else if (typeof category == 'undefined') questions = await Question.find({subject: {$regex: search, $options: 'gi'}})
+    else questions = await Question.find({subject: {$regex: search, $options: 'gi'}, category: category})
     let errors = []
     let success = ""
     let categories = getCategories(req.session.user.team)
     res.render('app/questions', {
         title: 'Questions',
+        image: req.session.user.image,
         questions, errors, success, categories
     })
 })
@@ -32,7 +35,7 @@ router.post('/questions', isConnected, async (req, res) => {
     let {subject, body, category} = req.body
     let errors = []
     let success = ""
-    if (!subject || !body) errors.push('All fields are required')
+    if (!subject || !body || !category) errors.push('All fields are required')
     if (errors.length == 0) {
         let question = new Question({
             user: req.session.user.email,
@@ -45,13 +48,8 @@ router.post('/questions', isConnected, async (req, res) => {
     let categories = getCategories(req.session.user.team)
     res.render('app/questions', {
         title: 'Questions',
+        image: req.session.user.image,
         questions, errors, success, categories
-    })
-})
-// Get Chat Room Page
-router.get('/chat', isConnected, (req, res) => {
-    res.render('app/chat', {
-        title: 'Chat Room'
     })
 })
 

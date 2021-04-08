@@ -1,103 +1,86 @@
-<%- include('../partials/navbar_app') %>
+<%- include('../partials/navbar_app') %> <%- include('../partials/ask') %> <%
+const months = ["January", "February", "March", "April", "May", "June", "July",
+"August", "September", "October", "November", "December"]; %>
 
-<div
-  class="modal fade bd-example-modal-lg"
-  id="questionModal"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="questionModal"
-  aria-hidden="true"
->
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ask Your Question</h5>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
+<div class="row container-fluid my-5">
+  <div class="col-md-4 col-12">
+    <h3>
+      <button
+        class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#categories"
+        aria-expanded="false"
+        aria-controls="categories"
+      >
+        Categories
+      </button>
+    </h3>
+    <div class="collapse" id="categories">
+      <div class="my-2">
+        <% categories.forEach(category => { %>
+        <a class="dropdown-item category" style="cursor: pointer"
+          ><%= category %></a
         >
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <% }) %>
       </div>
-      <div class="modal-body">
-      <form action="/questions" method="POST">
-        <div class="form-group">
-          <input
-            type="text"
-            name="subject"
-            class="form-control"
-            placeholder="Subject"
-            value="<%= typeof subject != 'undefined' ? subject : '' %>"
-          />
-        </div>
-        <div class="form-group">
-            <textarea name="body" id="editor"></textarea>
-        </div>
-        <div class="form-group">
-          <select name="team" class="custom-select">
-            <option value="">Category</option>
-            <% categories.forEach(category => { %> 
-            <option value="<%=category%>">
-                <%= category %> 
-            </option>
-            <% }) %> 
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary">Save</button>
-      </div>
-      </form>
     </div>
   </div>
-</div>
-
-<div class="container my-5">
-    <%- include ("../partials/messages"); %>
-  <% if (questions.length > 0) { %> <% questions.forEach(question => { %>
-    <div class="card bg-light mb-3">
-        <div class="card-header">
-      <%= question.subject %> <% if (typeof question.best != 'undefined') { %>
-      <span class="badge badge-success float-right"> <%= question.answers.length %> </span>
+  <div class="col-md-7 col-12">
+    <%- include ("../partials/messages"); %> <% if (questions.length > 0) { %>
+    <% questions.forEach(question => { %> <% if (typeof question.best !=
+    'undefined') { %>
+    <div class="card bg-light mb-3 success">
       <% } else { %>
-      <span class="badge badge-light float-right"> <%= question.answers.length %> </span>
-      <% } %>
+      <div class="card bg-light mb-3">
+        <% } %>
+        <div class="card-header">
+          <h2 class="float-left"><%= question.subject %></h2>
+          <small class="display-6 lead float-right"
+            ><%= question.created_at.getDate() + ' ' +
+            months[question.created_at.getMonth()] + ' ' +
+            question.created_at.getFullYear() %></small
+          >
         </div>
         <div class="card-body">
-            <%- question.body %>
-            <div>
-            <p class="lead float-left"><%= question.created_at.getDate() + '-' + question.created_at.getMonth() + '-' + question.created_at.getFullYear() %></p>
+          <%- question.body %>
+          <small class="lead text-primary"> #<%= question.category %> </small>
+          <hr class="my-4" />
+          <div>
             <p class="lead">
-            <a href="/answer/<%= question._id %>" class="btn btn-success float-right">Answer</a>
+              <a
+                href="/answer/<%= question._id %>"
+                class="btn btn-success float-right"
+                >Answer</a
+              >
+              <a type="button" class="btn btn-primary mx-3 float-right"
+                >Show Answers ( <%= question.answers.length %> )</a
+              >
             </p>
-            </div>
+          </div>
         </div>
       </div>
 
-  <% }) %> <% } else { %>
-  <h2>There are no questions yet</h2>
-  <% } %>
+      <% }) %> <% } else { %>
+      <h2>There are no questions yet</h2>
+      <% } %>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll(".category").forEach((cat) => {
+      cat.addEventListener("click", (e) => {
+        let link = window.location.href
+        let category = e.target.innerText
+        if (link.includes('category')) {
+          link = link.replace(/category=\w*/, `category=${category}`)
+        } else if (link.includes('search')) {
+          link += `&category=${category}`
+        } else {
+          link = `/questions?category=${category}`
+        }
+        window.location.href = link
+      });
+    });
+  </script>
 </div>
-
-<button
-  type="button"
-  class="fab bg-primary btn btn-primary"
-  data-toggle="modal"
-  data-target="#questionModal"
->
-  <i class="fas fa-plus"></i>
-</button>
-
-<script src="https://cdn.ckeditor.com/ckeditor5/27.0.0/classic/ckeditor.js"></script>
-<script type="module">
-    ClassicEditor
-        .create( document.querySelector( '#editor' ) )
-        .catch( error => {
-            console.error( error );
-        } );
-</script>

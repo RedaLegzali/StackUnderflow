@@ -39,6 +39,10 @@ app.use(fileUpload())
 app.use("/", require("./routes/index"))
 // Auth Routes
 app.use("/auth", require("./routes/auth"))
+// User Routes
+app.use('/user', require('./routes/user'))
+// Chat Routes
+app.use('/chat', require('./routes/chat'))
 
 // Mongodb Connection
 mongoose

@@ -21,12 +21,9 @@ router.get("/register", isNotConnected, (req, res) => {
 });
 // Register
 router.post("/register", isNotConnected, async (req, res) => {
-  let { email, name, password, passwordConfirm, team } = req.body;
+  let { email, name, password, passwordConfirm, team, avatar } = req.body;
   let errors = [];
   let success = "";
-  if (!req.files || Object.keys(req.files).length === 0) {
-    errors.push("No files were uploaded");
-  }
   if (!email || !name || !password || !passwordConfirm || !team)
     errors.push("All fields are required");
   if (password !== passwordConfirm) errors.push("Passwords must match");
@@ -35,10 +32,15 @@ router.post("/register", isNotConnected, async (req, res) => {
   let user = await User.findOne({ email: email });
   if (user) errors.push("This email already exists");
   if (errors.length == 0) {
-    let file = req.files.image;
-    let filename = name.toLowerCase() + path.extname(file.name);
-    let upload = __basedir + "/uploads/" + filename;
-    file.mv(upload);
+    let filename;
+    if (!req.files || Object.keys(req.files).length === 0) {
+      filename = avatar;
+    } else {
+      let file = req.files.image;
+      filename = name.toLowerCase() + path.extname(file.name);
+      let upload = __basedir + "/public/images/users/" + filename;
+      file.mv(upload);
+    }
     let hash = await bcrypt.hash(password, 10);
     let user = new User({
       name,
