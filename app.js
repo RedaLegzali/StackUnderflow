@@ -2,17 +2,18 @@
 require("dotenv").config();
 
 // Global Basedir
-global.__basedir = __dirname
+global.__basedir = __dirname;
 
 // Require all the dependencies
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
 const session = require("express-session");
-const flash = require('express-flash')
+const flash = require("express-flash");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
+const getLocals = require('./middleware/locals')
 const port = process.env.PORT || 3000;
 // View Engine : EJS
 app.set("view engine", "ejs");
@@ -34,19 +35,21 @@ app.use(morgan("combined"));
 // Body Parser
 app.use(express.urlencoded({ extended: false }));
 // File Upload
-app.use(fileUpload())
+app.use(fileUpload());
+// Local Variables
+app.use(getLocals)
 // Index Routes
-app.use("/", require("./routes/index"))
+app.use("/", require("./routes/index"));
 // Auth Routes
-app.use("/auth", require("./routes/auth"))
+app.use("/auth", require("./routes/auth"));
 // User Routes
-app.use('/user', require('./routes/user'))
+app.use("/user", require("./routes/user"));
 // Chat Routes
-app.use('/chat', require('./routes/chat'))
+app.use("/chat", require("./routes/chat"));
 // Question Routes
-app.use('/questions', require('./routes/questions'))
-// Answer Routes
-// app.use('/answers', require('./routes/answers'))
+app.use("/questions", require("./routes/questions"));
+// 404 
+app.use('*', (req, res) => res.render('notfound'))
 
 // Mongodb Connection
 mongoose

@@ -1,0 +1,148 @@
+<%- include('../partials/navbar_app') %> <%- include('../partials/ask') %> <%
+const months = ["January", "February", "March", "April", "May", "June", "July",
+"August", "September", "October", "November", "December"]; %>
+
+<div
+  class="modal fade"
+  id="deleteModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you sure ?</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-info">
+          If you delete your question all the answers will be deleted
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" id="btn-delete" class="btn btn-danger">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <%- include ("../partials/messages"); %> <% if (questions.length > 0) { %> <%
+  questions.forEach(question => { %>
+  <div class="card bg-light mb-3">
+    <div class="card-body row">
+      <div class="col-sm-2 col-12 align-middle text-center answers">
+        <% if (typeof question.best != 'undefined') { %>
+        <p class="mb-0 mt-3 text-success lead">
+          <%= question.answers.length %>
+        </p>
+        <% } else { %>
+        <p class="mb-0 mt-3 text-primary lead">
+          <%= question.answers.length %>
+        </p>
+        <% } %>
+        <small class="text-secondary">Answers</small>
+      </div>
+      <div class="col-sm-10 col-12">
+        <a href="/questions/<%= question._id %>" class="btn-link">
+          <p class="lead text-info"><%= question.subject %></p>
+        </a>
+        <div>
+          <small class="text-primary"> # <%= question.category %> </small>
+          <small class="text-secondary float-right">
+            Asked <%= months[question.created_at.getMonth()] + ' ' +
+            question.created_at.getDate() + 'th ' +
+            question.created_at.getFullYear() %>
+          </small>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer bg-light">
+      <input type="hidden" name="question" value="<%= question._id %>" />
+      <a
+        class="btn btn-info"
+        data-toggle="collapse"
+        href="#collapse-<%= question._id %>"
+        role="button"
+        aria-expanded="false"
+        aria-controls="collapse-<%= question._id %>"
+      >
+        Edit
+      </a>
+      <button
+        id="<%= question._id %>"
+        type="button"
+        data-toggle="modal"
+        data-target="#deleteModal"
+        class="btn btn-danger btn-modal"
+      >
+        Delete
+      </button>
+      <div class="collapse mt-3" id="collapse-<%= question._id %>">
+        <form action="/user/questions" method="POST">
+          <input type="hidden" name="id" value="<%= question._id %>" />
+          <div class="form-group">
+            <input
+              type="text"
+              name="subject"
+              class="form-control"
+              placeholder="Subject"
+              value="<%= question.subject %>"
+            />
+          </div>
+          <div class="form-group">
+            <textarea class="editors" name="body"><%= question.body %></textarea>
+          </div>
+          <div class="form-group">
+            <select name="category" class="custom-select">
+              <option value="<%= question.category %>">
+                <%= question.category %>
+              </option>
+              <% categories.forEach(category => { %>
+              <option value="<%=category%>"><%= category %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <% }) %> <% } else { %>
+  <h2>You have no questions yet</h2>
+  <% } %>
+  <form id="delete" method="GET"></form>
+</div>
+
+<script>
+  let id;
+  document.querySelectorAll(".btn-modal").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      id = e.target.id;
+    });
+  });
+  document.getElementById("btn-delete").addEventListener("click", (e) => {
+    const form = document.getElementById("delete");
+    form.action = `/user/questions/${id}`;
+    form.submit();
+  });
+  document.querySelectorAll(".editors").forEach((editor) => {
+    ClassicEditor.create(editor, config).catch((error) => console.error(error));
+  });
+</script>

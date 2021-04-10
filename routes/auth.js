@@ -2,15 +2,13 @@ const router = require("express").Router();
 const bcrypt = require("bcrypt");
 const path = require("path");
 const { isNotConnected } = require("../middleware/security");
-const { getPasswordSize } = require('../utils')
+const { getPasswordSize } = require("../utils");
 const User = require("../models/User");
 
 // Login Page
 router.get("/login", isNotConnected, async (req, res) => {
-  let success = req.flash("message");
   res.render("auth/login", {
-    title: "Login",
-    success
+    title: "Login"
   });
 });
 // Register Page
@@ -23,7 +21,7 @@ router.get("/register", isNotConnected, (req, res) => {
 router.post("/register", isNotConnected, async (req, res) => {
   let { email, name, password, passwordConfirm, team, avatar } = req.body;
   let errors = [];
-  let success = "";
+  let success = ""
   if (!email || !name || !password || !passwordConfirm || !team)
     errors.push("All fields are required");
   if (password !== passwordConfirm) errors.push("Passwords must match");
@@ -34,11 +32,11 @@ router.post("/register", isNotConnected, async (req, res) => {
   if (errors.length == 0) {
     let filename;
     if (!req.files || Object.keys(req.files).length === 0) {
-      filename = avatar;
+      filename = "avatars/" + avatar;
     } else {
       let file = req.files.image;
-      filename = name.toLowerCase() + path.extname(file.name);
-      let upload = __basedir + "/public/images/users/" + filename;
+      filename = "uploads/" + name.toLowerCase() + path.extname(file.name);
+      let upload = __basedir + "/public/images/" + filename;
       file.mv(upload);
     }
     let hash = await bcrypt.hash(password, 10);
@@ -49,22 +47,19 @@ router.post("/register", isNotConnected, async (req, res) => {
       password: hash,
       team
     });
-    user.save();
-    success = "You have registered successfully";
+    await user.save();
+    success = "You have registered successfully"
   }
-  res.render("auth/register", {
-    title: "Register",
-    email,
-    name,
-    errors,
-    success
-  });
+  let locals = {
+    errors, success, email, name
+  }
+  req.flash('locals', locals)
+  res.redirect("/auth/register");
 });
 // Login
 router.post("/login", isNotConnected, async (req, res) => {
   let { email, password } = req.body;
   let errors = [];
-  let success = "";
   if (!email || !password) errors.push("All fields are required");
   let user = await User.findOne({ email: email });
   if (!user) errors.push("Wrong email or password");
@@ -78,19 +73,21 @@ router.post("/login", isNotConnected, async (req, res) => {
         team: user.team
       };
       res.redirect("/questions");
+      return;
     } else errors.push("Wrong email or password");
   }
-  res.render("auth/login", {
-    title: "Login",
-    email,
-    errors,
-    success
-  });
+  let locals = {
+    errors, email
+  }
+  req.flash('locals', locals)
+  res.redirect("/auth/login");
 });
 // Logout
 router.get("/logout", (req, res) => {
   delete req.session.user;
-  req.flash("message", "Logout successful");
+  let success = "You have logged out successfully"
+  let locals = { success }
+  req.flash('locals', locals)
   res.redirect("/auth/login");
 });
 

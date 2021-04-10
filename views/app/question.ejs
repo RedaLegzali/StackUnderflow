@@ -1,0 +1,63 @@
+<%- include('../partials/navbar_app') %> <% const months = ["January",
+"February", "March", "April", "May", "June", "July", "August", "September",
+"October", "November", "December"]; %> %>
+
+<div class="container mt-5">
+  <%- include('../partials/messages') %>
+  <div class="border-bottom mb-3 pb-3">
+    <h2 class="text-info"><%= question.subject %></h2>
+    <small class="text-secondary">
+      Asked <%= months[question.created_at.getMonth()] + ' ' +
+      question.created_at.getDate() + 'th ' + question.created_at.getFullYear()
+      %> By <%= question.user.name %>
+    </small>
+  </div>
+  <div style="border: none" class="card mb-2">
+    <div class="card-body"><%- question.body %></div>
+  </div>
+  <% if (question.answers.length > 0) { %>
+  <h3 class="text-primary mb-3"><%= question.answers.length %> Answers</h3>
+  <% question.answers.forEach( answer => { %> <% if (String(answer._id) ==
+  String(question.best) ) { %>
+  <div class="card bg-light border-success mb-3">
+    <% } else { %>
+    <div class="card bg-light mb-3">
+      <% } %>
+      <div class="card-body">
+        <%- answer.body %>
+        <div class="d-flex justify-content-between">
+          <small class="text-secondary">By <%= answer.user %></small>
+          <% if (user.email === question.user.email) { %>
+          <form action="/questions/<%= question._id %>" method="POST">
+            <input name="best" type="hidden" value="<%= answer._id %>" />
+            <button type="submit" class="btn btn-success">Vote</button>
+          </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% }) %> <% } %>
+    <div class="mt-5">
+      <form action="/questions/<%= question._id %>" method="POST">
+        <div class="form-group">
+          <textarea name="body" id="editor">
+<%= typeof body != 'undefined' ? body : '' %></textarea
+          >
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-success">Answer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script src="/js/ckeditor.js">
+</script>
+<script>
+  const config = {
+    toolbar: ["heading", "alignment", "blockQuote", "bold", "italic", "code", "codeBlock", "fontColor", "fontFamily", "fontSize", "numberedList", "bulletedList", "insertTable"]
+  }
+  ClassicEditor
+    .create( document.getElementById( 'editor' ), config )
+    .catch( error => console.error( error ) );
+</script>

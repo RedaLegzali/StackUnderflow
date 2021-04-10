@@ -1,6 +1,26 @@
 <%- include('../partials/navbar_app') %>
 <%- include('../partials/ask') %> 
 
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Are you sure ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-info">If you delete your profile all your questions will be deleted</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+        <button type="button" id="delete-btn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="row my-5">
   <div class="col-md-6 m-auto">
     <div class="card card-body">
@@ -56,11 +76,9 @@
         <div class="form-group">
           <select name="team" class="custom-select">
             <option value="<%= user.team %>"><%= user.team %></option>
-            <option value="Dev">Dev</option>
-            <option value="Security">Security</option>
-            <option value="SysAdmin">SysAdmin</option>
-            <option value="Network">Networking</option>
-            <option value="DBA">DBA</option>
+            <% teams.forEach(team => { %>
+            <option value="<%= team %>"><%= team %></option>
+            <% }) %>
           </select>
         </div>
         <div class="form-group px-3 py-3 border">
@@ -87,7 +105,7 @@
               aria-expanded="false"
             >
               <img
-                src="/images/users/1.svg"
+                src="/images/avatars/1.svg"
                 width="60"
                 height="60"
                 class="rounded-circle"
@@ -107,7 +125,7 @@
         </div>
         <div class="row d-flex justify-content-around">
           <button type="submit" class="btn btn-primary col-5">Edit</button>
-          <button type="button" id="btn-delete" class="btn btn-danger col-5">Delete</button>
+          <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger col-5">Delete</button>
         </div>
       </form>
       <form id="delete" action="/user/delete" method="GET"></form>
@@ -122,7 +140,7 @@
       let item = `
         <a class="dropdown-item col-4" style="display:inline;">
           <img
-            src="/images/users/${i}.svg"
+            src="/images/avatars/${i}.svg"
             class="rounded-circle avatar"
             style="cursor: pointer;"
             width="60"
@@ -145,7 +163,7 @@
     document.querySelector('label[for="file"]').textContent =
       e.target.files[0].name;
   });
-  document.getElementById('btn-delete').addEventListener('click', (e) => {
+  document.getElementById('delete-btn').addEventListener('click', (e) => {
       document.getElementById('delete').submit()
   })
 </script>

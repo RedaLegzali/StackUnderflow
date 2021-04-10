@@ -2,6 +2,14 @@ const getPasswordSize = () => {
   return 6;
 };
 
+const getTeams = (team = null) => {
+  let teams = ["Dev", "Security", "SysAdmin", "Network", "DBA"];
+  if (team) {
+    return teams.filter(t => t !== team)
+  }
+  return teams
+};
+
 const getCategories = (team) => {
   switch (team) {
     case "Dev":
@@ -22,4 +30,4 @@ const getCategories = (team) => {
   }
 };
 
-module.exports = { getCategories, getPasswordSize };
+module.exports = { getCategories, getTeams, getPasswordSize };

@@ -1,4 +1,5 @@
 const {Schema, model} = require('mongoose')
+const ObjectId = require('mongoose').Types.ObjectId
 
 const questionSchema = new Schema({
     user: String,
@@ -6,7 +7,7 @@ const questionSchema = new Schema({
     body: String,
     category: String,
     answers: Array,
-    best: String,
+    best: ObjectId,
     created_at: {
         type: Date,
         default: Date.now()

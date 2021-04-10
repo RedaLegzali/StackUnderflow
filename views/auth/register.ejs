@@ -49,11 +49,9 @@
         <div class="form-group">
           <select name="team" class="custom-select">
             <option value="">Your Team</option>
-            <option value="Dev">Dev</option>
-            <option value="Security">Security</option>
-            <option value="SysAdmin">SysAdmin</option>
-            <option value="Network">Networking</option>
-            <option value="DBA">DBA</option>
+            <% teams.forEach(team => { %>
+            <option value="<%= team %>"><%= team %></option>
+            <% }) %>
           </select>
         </div>
         <div class="form-group px-3 py-3 border">
@@ -80,17 +78,21 @@
               aria-expanded="false"
             >
               <img
-                src="/images/users/1.svg"
+                src="/images/avatars/1.svg"
                 width="60"
                 height="60"
                 class="rounded-circle"
                 id="main-avatar"
               />
-              <input name="avatar" type="hidden" value="1.svg">
+              <input name="avatar" type="hidden" value="1.svg" />
               Choose an Avatar
             </a>
             <div class="dropdown-menu" aria-labelledby="menu">
-              <div id="avatars" style="overflow-x: hidden;" class="d-inline-flex justify-content-around flex-wrap row"></div>
+              <div
+                id="avatars"
+                style="overflow-x: hidden"
+                class="d-inline-flex justify-content-around flex-wrap row"
+              ></div>
             </div>
           </div>
         </div>
@@ -110,7 +112,7 @@
       let item = `
         <a class="dropdown-item col-4" style="display:inline;">
           <img
-            src="/images/users/${i}.svg"
+            src="/images/avatars/${i}.svg"
             class="rounded-circle avatar"
             style="cursor: pointer;"
             width="60"
@@ -120,14 +122,14 @@
       `;
       div.insertAdjacentHTML("beforeend", item);
     }
-    document.querySelectorAll('.avatar').forEach(avatar => {
-      avatar.addEventListener('click', (e) => {
-        let link = e.target.currentSrc
-        document.getElementById('main-avatar').src = link
-        let filename = link.slice( link.lastIndexOf('/') + 1 )
-        document.querySelector('input[name="avatar"]').value = filename
-      })
-    })
+    document.querySelectorAll(".avatar").forEach((avatar) => {
+      avatar.addEventListener("click", (e) => {
+        let link = e.target.currentSrc;
+        document.getElementById("main-avatar").src = link;
+        let filename = link.slice(link.lastIndexOf("/") + 1);
+        document.querySelector('input[name="avatar"]').value = filename;
+      });
+    });
   };
   document.getElementById("file").addEventListener("change", (e) => {
     document.querySelector('label[for="file"]').textContent =

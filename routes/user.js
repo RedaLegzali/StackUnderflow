@@ -1,16 +1,16 @@
 const { isConnected } = require("../middleware/security");
-const { getCategories } = require("../utils");
+const { getPasswordSize } = require("../utils");
+const path = require("path");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const Question = require("../models/Question");
 const router = require("express").Router();
+const isValid = require("mongoose").Types.ObjectId.isValid;
 
 // Get profile
 router.get("/profile", isConnected, (req, res) => {
-  res.render("app/profile", {
-    title: "Profile",
-    image: req.session.user.image,
-    user: req.session.user,
-    categories: getCategories(req.session.user.team)
+  res.render("profile/profile", {
+    title: "Profile"
   });
 });
 // Put profile
@@ -39,11 +39,11 @@ router.post("/profile", isConnected, async (req, res) => {
   if (errors.length == 0) {
     let filename;
     if (!req.files || Object.keys(req.files).length === 0) {
-      filename = avatar;
+      filename = "avatars/" + avatar;
     } else {
       let file = req.files.image;
-      filename = name.toLowerCase() + path.extname(file.name);
-      let upload = __basedir + "/public/images/users/" + filename;
+      filename = "uploads/" + name.toLowerCase() + path.extname(file.name);
+      let upload = __basedir + "/public/images/" + filename;
       file.mv(upload);
     }
     let hash = await bcrypt.hash(password, 10);
@@ -58,32 +58,60 @@ router.post("/profile", isConnected, async (req, res) => {
       image: filename,
       team
     };
-    user.save();
+    await user.save();
     success = "User edited successfully";
   }
-  res.render("app/profile", {
-    title: "Profile",
-    image: req.session.user.image,
-    user: req.session.user,
-    errors,
-    success,
-    categories: getCategories(req.session.user.team)
-  });
+  let locals = { success, errors };
+  req.flash("locals", locals);
+  res.redirect("/user/profile");
 });
 // Delete user
 router.get("/delete", isConnected, async (req, res) => {
+  await Question.deleteMany({ user: req.session.user.email });
   await User.deleteOne({ email: req.session.user.email });
   delete req.session.user;
-  req.flash("message", "User deleted successfully");
+  let success = "User deleted successfully";
+  let locals = { success };
+  req.flash("locals", locals);
   res.redirect("/auth/login");
 });
 // Get user questions
-router.get("/questions", isConnected, (req, res) => {
-  res.render("app/myquestions", {
+router.get("/questions", isConnected, async (req, res) => {
+  let questions = await Question.find({ user: req.session.user.email });
+  res.render("profile/questions", {
     title: "My Question",
-    image: req.session.user.image,
-    categories: getCategories(req.session.user.team)
+    questions
   });
 });
-
+// Edit question
+router.post("/questions", isConnected, async (req, res) => {
+  let { id, subject, body, category } = req.body;
+  let errors = []
+  let success = ""
+  if (isValid(id)) {
+    if (!subject || !body || !category) errors.push('All field are required')
+    if (errors.length == 0) {
+      let question = await Question.findOne({ _id: id });
+      question.subject = subject
+      question.body = body
+      question.category = category
+      await question.save()
+      success = "Question edited successfully";
+    }
+  }
+  let locals = {errors, success}
+  req.flash("locals", locals);
+  res.redirect("/user/questions");
+});
+// Delete question
+router.get("/questions/:id", isConnected, async (req, res) => {
+  let id = req.params.id;
+  if (isValid(id)) {
+    await Question.deleteOne({ _id: id });
+    let success = "Question deleted successfully";
+    let locals = { success };
+    req.flash("locals", locals);
+  }
+  res.redirect("/user/questions");
+});
 module.exports = router;

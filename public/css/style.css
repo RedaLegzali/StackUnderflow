@@ -11,11 +11,26 @@ body {
     padding: 20px 23px 20px 23px;
     border-radius: 50%;
     position: fixed;
-    right: 5%;
+    right: 3%;
     bottom: 5%;
     z-index: 999;
 }
 
 .ck-content {
     height: 200px;
+}
+
+@media screen and (max-width: 576px) {
+    .answers {
+        border-right: 0px;
+        border-bottom: 1px solid #dee2e6;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+    }
+}
+@media screen and (min-width: 576px) {
+    .answers {
+        border-bottom: 0px;
+        border-right: 1px solid #dee2e6;
+    }
 }
