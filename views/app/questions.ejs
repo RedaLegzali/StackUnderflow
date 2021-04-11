@@ -4,12 +4,19 @@ const months = ["January", "February", "March", "April", "May", "June", "July",
 
 <div class="row container-fluid d-flex justify-content-around my-5">
   <div class="col-lg-2 col-12">
+    <div class="d-flex justify-content-between flex-wrap">
     <h3>Categories</h3>
+    <button id="category-clear" class="btn btn-secondary rounded">Clear</button>
+    </div>
     <div class="my-2">
       <ul class="list-group list-group-flush">
         <% categories.forEach(category => { %>
         <li class="list-group-item">
-          <a class="category" style="cursor: pointer"><%= category %></a>
+          <% if (selected === category) { %> 
+            <a class="category text-info" style="cursor: pointer"><%= category %></a>
+          <% } else { %> 
+            <a class="category text-primary" style="cursor: pointer"><%= category %></a>
+          <% } %> 
         </li>
         <% }) %>
       </ul>
@@ -55,12 +62,24 @@ const months = ["January", "February", "March", "April", "May", "June", "July",
   </div>
 
   <script>
+    const category_pattern = /category=\w*/
+    document.getElementById('category-clear').addEventListener('click', (e) => {
+      let link = window.location.href;
+      if (link.match(category_pattern)) {
+        if (link.includes('search')) {
+          link = link.replace(category_pattern, '').replace('&', '')
+        } else {
+          link = '/questions'
+        }
+        window.location.href = link;
+      }
+    })
     document.querySelectorAll(".category").forEach((cat) => {
       cat.addEventListener("click", (e) => {
         let link = window.location.href;
         let category = e.target.innerText;
         if (link.includes("category")) {
-          link = link.replace(/category=\w*/, `category=${category}`);
+          link = link.replace(category_pattern, `category=${category}`);
         } else if (link.includes("search")) {
           link += `&category=${category}`;
         } else {

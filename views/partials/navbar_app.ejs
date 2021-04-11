@@ -28,19 +28,26 @@
       </li>
     </ul>
     <div class="form-inline my-2 my-lg-0">
-      <input
-        id="search"
-        class="form-control mr-sm-2"
-        type="text"
-        placeholder="Search"
-      />
-      <button
-        id="search-btn"
-        class="btn btn-primary my-2 my-sm-0"
-        type="button"
-      >
-        Search
-      </button>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Subject"
+          id="search"
+        />
+        <div class="input-group-append">
+          <button id="search-btn" class="btn btn-outline-success" type="button">
+            Search
+          </button>
+          <button
+            id="search-clear"
+            class="btn btn-outline-secondary"
+            type="button"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
       <div class="dropdown">
         <a
           class="nav-link dropdown-toggle"
@@ -68,11 +75,23 @@
 </nav>
 
 <script>
+  const search_pattern = /search=\w*/;
+  document.getElementById("search-clear").addEventListener("click", (e) => {
+    let link = window.location.href;
+    if (link.match(search_pattern)) {
+      if (link.includes("category")) {
+        link = link.replace(search_pattern, "").replace("&", "");
+      } else {
+        link = "/questions";
+      }
+      window.location.href = link;
+    }
+  });
   document.getElementById("search-btn").addEventListener("click", (e) => {
     let link = window.location.href;
     let search = document.getElementById("search").value;
     if (link.includes("search")) {
-      link = link.replace(/search=\w*/, `search=${search}`);
+      link = link.replace(search_pattern, `search=${search}`);
     } else if (link.includes("category")) {
       link += `&search=${search}`;
     } else {

@@ -142,7 +142,7 @@ router.get("/", isConnected, async (req, res) => {
   }
   res.render("app/questions", {
     title: "Questions",
-    questions
+    questions, selected: category
   });
 });
 // Post Question
