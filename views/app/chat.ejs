@@ -1,6 +1,50 @@
-<%- include('../partials/navbar_app') %>
-<%- include('../partials/ask') %> 
+<%- include('../partials/navbar_app') %> <%- include('../partials/ask') %>
 
-<div class="container">
-    <h3>Coming soon</h3>
+<div style="display: none">
+  <p id="user"><%= user.name %></p>
+  <p id="room"><%= user.team %></p>
 </div>
+
+<div class="container-fluid my-5 mx-auto row">
+  <div
+    id="sideMenu"
+    class="bg-primary col-md-2 col-8 offset-md-1 mt-3 pt-5 rounded"
+  >
+    <div style="color: white" class="lead">
+      <i class="fas fa-comments"></i>
+      Room
+      <p class="lead shadow mt-3 text-center"><%= user.team %></p>
+    </div>
+    <hr />
+    <div class="lead" style="height: 80%; color: white">
+      <i class="fas fa-users"></i>
+      Users
+      <div
+        id="users"
+        class="mt-2 text-center"
+        style="overflow-y: auto; height: 90%"
+      ></div>
+    </div>
+  </div>
+  <div style="height: 65vh" class="border mt-3 col-md-8 col-12">
+    <div
+      id="messages"
+      style="height: 80%; overflow-y: auto"
+      class="container my-3 col-12"
+    ></div>
+    <hr />
+    <form id="chat-form">
+      <div class="form-group col-10 mx-auto">
+        <div class="input-group mb-3">
+          <input id="message" type="text" class="form-control" />
+          <div class="input-group-append">
+            <button class="btn btn-primary">Send</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/main.js"></script>

@@ -34,7 +34,11 @@
         type="text"
         placeholder="Search"
       />
-      <button id="search-btn" class="btn btn-primary my-2 my-sm-0" type="button">
+      <button
+        id="search-btn"
+        class="btn btn-primary my-2 my-sm-0"
+        type="button"
+      >
         Search
       </button>
       <div class="dropdown">
@@ -65,15 +69,15 @@
 
 <script>
   document.getElementById("search-btn").addEventListener("click", (e) => {
-    let link = window.location.href
+    let link = window.location.href;
     let search = document.getElementById("search").value;
-    if (link.includes('search')) {
-      link = link.replace(/search=\w*/, `search=${search}`)
-    } else if (link.includes('category')) {
-      link += `&search=${search}`
+    if (link.includes("search")) {
+      link = link.replace(/search=\w*/, `search=${search}`);
+    } else if (link.includes("category")) {
+      link += `&search=${search}`;
     } else {
-      link = `/questions?search=${search}`
+      link = `/questions?search=${search}`;
     }
-    window.location.href = link
+    window.location.href = link;
   });
 </script>

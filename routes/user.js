@@ -86,20 +86,20 @@ router.get("/questions", isConnected, async (req, res) => {
 // Edit question
 router.post("/questions", isConnected, async (req, res) => {
   let { id, subject, body, category } = req.body;
-  let errors = []
-  let success = ""
+  let errors = [];
+  let success = "";
   if (isValid(id)) {
-    if (!subject || !body || !category) errors.push('All field are required')
+    if (!subject || !body || !category) errors.push("All field are required");
     if (errors.length == 0) {
       let question = await Question.findOne({ _id: id });
-      question.subject = subject
-      question.body = body
-      question.category = category
-      await question.save()
+      question.subject = subject;
+      question.body = body;
+      question.category = category;
+      await question.save();
       success = "Question edited successfully";
     }
   }
-  let locals = {errors, success}
+  let locals = { errors, success };
   req.flash("locals", locals);
   res.redirect("/user/questions");
 });

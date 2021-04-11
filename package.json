@@ -5,8 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "dev": "nodemon app",
-    "test": "test"
+    "dev": "nodemon app"
   },
   "repository": {
     "type": "git",
@@ -16,7 +15,8 @@
     "StackUnderflow",
     "Node",
     "Express",
-    "Mongodb"
+    "Mongodb",
+    "Socket.io"
   ],
   "author": "RedaLegzali",
   "license": "MIT",
@@ -25,12 +25,9 @@
   },
   "homepage": "https://github.com/RedaLegzali/StackUnderflow#readme",
   "devDependencies": {
-    "chai": "^4.3.4",
-    "mocha": "^8.3.2",
     "nodemon": "^2.0.7"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^27.0.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.6",
@@ -40,6 +37,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.17.1",
     "mongoose": "^5.12.3",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "socket.io": "^4.0.1"
   }
 }

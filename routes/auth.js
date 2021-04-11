@@ -21,7 +21,8 @@ router.get("/register", isNotConnected, (req, res) => {
 router.post("/register", isNotConnected, async (req, res) => {
   let { email, name, password, passwordConfirm, team, avatar } = req.body;
   let errors = [];
-  let success = ""
+  let success = "";
+  let locals;
   if (!email || !name || !password || !passwordConfirm || !team)
     errors.push("All fields are required");
   if (password !== passwordConfirm) errors.push("Passwords must match");
@@ -48,13 +49,15 @@ router.post("/register", isNotConnected, async (req, res) => {
       team
     });
     await user.save();
-    success = "You have registered successfully"
+    success = "You have registered successfully";
+    locals = { success, email };
+    req.flash("locals", locals);
+    res.redirect("/auth/login");
+  } else {
+    locals = { errors, success, email, name };
+    req.flash("locals", locals);
+    res.redirect("/auth/register");
   }
-  let locals = {
-    errors, success, email, name
-  }
-  req.flash('locals', locals)
-  res.redirect("/auth/register");
 });
 // Login
 router.post("/login", isNotConnected, async (req, res) => {
@@ -77,17 +80,18 @@ router.post("/login", isNotConnected, async (req, res) => {
     } else errors.push("Wrong email or password");
   }
   let locals = {
-    errors, email
-  }
-  req.flash('locals', locals)
+    errors,
+    email
+  };
+  req.flash("locals", locals);
   res.redirect("/auth/login");
 });
 // Logout
 router.get("/logout", (req, res) => {
   delete req.session.user;
-  let success = "You have logged out successfully"
-  let locals = { success }
-  req.flash('locals', locals)
+  let success = "You have logged out successfully";
+  let locals = { success };
+  req.flash("locals", locals);
   res.redirect("/auth/login");
 });
 

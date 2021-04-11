@@ -51,13 +51,28 @@
     </div>
   </div>
 
-<script src="/js/ckeditor.js">
-</script>
-<script>
-  const config = {
-    toolbar: ["heading", "alignment", "blockQuote", "bold", "italic", "code", "codeBlock", "fontColor", "fontFamily", "fontSize", "numberedList", "bulletedList", "insertTable"]
-  }
-  ClassicEditor
-    .create( document.getElementById( 'editor' ), config )
-    .catch( error => console.error( error ) );
-</script>
+  <script src="/js/ckeditor.js"></script>
+  <script>
+    const config = {
+      toolbar: [
+        "heading",
+        "alignment",
+        "blockQuote",
+        "bold",
+        "italic",
+        "code",
+        "codeBlock",
+        "fontColor",
+        "fontFamily",
+        "fontSize",
+        "numberedList",
+        "bulletedList",
+        "insertTable"
+      ]
+    };
+    ClassicEditor.create(
+      document.getElementById("editor"),
+      config
+    ).catch((error) => console.error(error));
+  </script>
+</div>

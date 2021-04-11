@@ -1,36 +1,47 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
 body {
-    font-family: 'Poppins', sans-serif;
-    overflow-x: hidden;
+  font-family: "Poppins", sans-serif;
+  overflow-x: hidden;
 }
 
 .fab {
-    color: white;
-    border: none;
-    padding: 20px 23px 20px 23px;
-    border-radius: 50%;
-    position: fixed;
-    right: 3%;
-    bottom: 5%;
-    z-index: 999;
+  color: white;
+  border: none;
+  padding: 20px 23px 20px 23px;
+  border-radius: 50%;
+  position: fixed;
+  right: 3%;
+  bottom: 5%;
+  z-index: 999;
 }
 
 .ck-content {
-    height: 200px;
+  height: 200px;
+}
+
+@media screen and (max-width: 767px) {
+  #sideMenu {
+    height: 40vh;
+  }
+}
+@media screen and (min-width: 767px) {
+  #sideMenu {
+    height: 65vh;
+  }
 }
 
 @media screen and (max-width: 576px) {
-    .answers {
-        border-right: 0px;
-        border-bottom: 1px solid #dee2e6;
-        margin-bottom: 20px;
-        padding-bottom: 20px;
-    }
+  .answers {
+    border-right: 0px;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
 }
 @media screen and (min-width: 576px) {
-    .answers {
-        border-bottom: 0px;
-        border-right: 1px solid #dee2e6;
-    }
+  .answers {
+    border-bottom: 0px;
+    border-right: 1px solid #dee2e6;
+  }
 }
