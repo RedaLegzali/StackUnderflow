@@ -18,6 +18,7 @@ const port = process.env.PORT || 3000;
 const server = require("http").createServer(app);
 const io = require("socket.io")(server);
 const { parseMessage, joinUser, leaveUser, getUsers } = require("./utils");
+const Chat = require('./models/Chat');
 
 // View Engine : EJS
 app.set("view engine", "ejs");
@@ -67,8 +68,13 @@ mongoose
 
 // Socket
 io.on("connection", (socket) => {
-  socket.on("join", (data) => {
+  socket.on("join", async (data) => {
     joinUser(socket.id, data.user, data.room);
+    let messages = await Chat.find({room: data.room}).sort({created_at: 'asc'})
+    socket.emit(
+      "messages",
+      messages
+    );
     socket.emit(
       "message",
       parseMessage("BOT", "Welcome to Stack Underflow chat")
@@ -86,8 +92,16 @@ io.on("connection", (socket) => {
       .emit(`message`, parseMessage("BOT", `${user.name} has left the chat`));
     socket.broadcast.to(user.room).emit("leave", socket.id);
   });
-  socket.on("chat", (data) => {
-    io.to(data.room).emit("message", parseMessage(data.user, data.message));
+  socket.on("chat", async (data) => {
+    let message = parseMessage(data.user, data.message)
+    io.to(data.room).emit("message", message);
+    let chat = new Chat({
+      user: message.user,
+      time: message.time,
+      message: message.message,
+      room: data.room
+    })
+    await chat.save()
   });
 });
 
