@@ -73,7 +73,7 @@ io.on("connection", (socket) => {
     // let messages = await Chat.find({ room: data.room }).sort({
     //   created_at: "asc"
     // })
-    socket.emit("messages", messages)
+    // socket.emit("messages", messages)
     socket.emit(
       "message",
       parseMessage("BOT", "Welcome to Stack Underflow chat. The chat messages are not saved")
