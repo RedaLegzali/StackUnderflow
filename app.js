@@ -18,7 +18,7 @@ const port = process.env.PORT || 3000
 const server = require("http").createServer(app)
 const io = require("socket.io")(server)
 const { parseMessage, joinUser, leaveUser, getUsers } = require("./utils")
-const Chat = require("./models/Chat")
+// const Chat = require("./models/Chat")
 
 // View Engine : EJS
 app.set("view engine", "ejs")
@@ -70,13 +70,13 @@ mongoose
 io.on("connection", (socket) => {
   socket.on("join", async (data) => {
     joinUser(socket.id, data.user, data.room)
-    let messages = await Chat.find({ room: data.room }).sort({
-      created_at: "asc"
-    })
+    // let messages = await Chat.find({ room: data.room }).sort({
+    //   created_at: "asc"
+    // })
     socket.emit("messages", messages)
     socket.emit(
       "message",
-      parseMessage("BOT", "Welcome to Stack Underflow chat")
+      parseMessage("BOT", "Welcome to Stack Underflow chat. The chat messages are not saved")
     )
     socket.join(data.room)
     socket.broadcast
@@ -94,13 +94,13 @@ io.on("connection", (socket) => {
   socket.on("chat", async (data) => {
     let message = parseMessage(data.user, data.message)
     io.to(data.room).emit("message", message)
-    let chat = new Chat({
-      user: message.user,
-      time: message.time,
-      message: message.message,
-      room: data.room
-    })
-    await chat.save()
+    //let chat = new Chat({
+    //  user: message.user,
+    //  time: message.time,
+    //  message: message.message,
+    //  room: data.room
+    //})
+    //await chat.save()
   })
 })
 
